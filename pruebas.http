@@ -1,0 +1,65 @@
+### =====================================================================
+### PRUEBAS CON REST CLIENT (extensión de VS Code)
+### Cada bloque se separa con ###. Se ejecuta con el enlace "Send Request"
+### que aparece sobre la línea de la petición.
+### La primera línea de la respuesta muestra el código de estado (HTTP/1.1 201, etc.)
+### =====================================================================
+
+
+### ---------------------------------------------------------------------
+### 1. GET productos -> 200 OK
+### 
+### ---------------------------------------------------------------------
+GET http://localhost:8080/productos
+
+
+### ---------------------------------------------------------------------
+### 2. POST crear producto -> 201 Created
+### 
+### ---------------------------------------------------------------------
+POST http://localhost:8080/productos
+Content-Type: application/json
+
+{
+  "nombre": "Remera",
+  "precio": 15000,
+  "stock": 10,
+  "categoria": "Ropa"
+}
+
+
+### ---------------------------------------------------------------------
+### 3. GET por id -> 200 OK
+### Usar un id que exista (el primer producto creado tiene id 1).
+### ---------------------------------------------------------------------
+GET http://localhost:8080/productos/1
+
+
+### ---------------------------------------------------------------------
+### 4. PUT actualizar -> 200 OK
+### El id va en la URL (@PathVariable) y los datos nuevos en el cuerpo (@RequestBody).
+### ---------------------------------------------------------------------
+PUT http://localhost:8080/productos/1
+Content-Type: application/json
+
+{
+  "nombre": "Remera estampada",
+  "precio": 18000,
+  "stock": 8,
+  "categoria": "Ropa"
+}
+
+
+### ---------------------------------------------------------------------
+### 5. DELETE eliminar -> 204 No Content
+### La respuesta no tiene cuerpo. Después, repetir el GET por id (bloque 3).
+### ---------------------------------------------------------------------
+DELETE http://localhost:8080/productos/1
+
+
+### =====================================================================
+### 
+### =====================================================================
+
+
+
