@@ -1,17 +1,21 @@
 package com.techlab.api_techlab.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.techlab.api_techlab.dto.ProductoConCategoria;
 import com.techlab.api_techlab.exception.ProductoNoEncontradoException;
 import com.techlab.api_techlab.model.Categoria;
 import com.techlab.api_techlab.model.Producto;
 import com.techlab.api_techlab.repository.CategoriaRepository;
 import com.techlab.api_techlab.repository.ProductoRepository;
 import com.techlab.api_techlab.util.Validador;
+
+import com.techlab.api_techlab.dto.ProductoConCategoria;
 
 @Service
 public class ProductoService {
@@ -81,13 +85,7 @@ public class ProductoService {
     // Versión temporal: recorre los productos de la base.
     // En el paso 16 se reemplaza por una consulta que filtra en la base.
     public List<Producto> listarPorCategoria(String categoria) {
-        List<Producto> resultado = new ArrayList<>();
-        for (Producto p : repository.findAll()) {
-            if (p.getCategoria().getNombre().equalsIgnoreCase(categoria)) {
-                resultado.add(p);
-            }
-        }
-        return resultado;
+        return repository.findByCategoriaNombre(categoria);
     }
 
     // Comprueba que la categoría enviada exista en la base y la devuelve completa
@@ -101,5 +99,26 @@ public class ProductoService {
             throw new IllegalArgumentException("No existe la categoría con id " + idCategoria);
         }
         return resultado.get();
+    }
+
+    // Clase 14 //
+
+    // GET /productos?nombre=cafe
+    public List<Producto> buscarPorNombre(String texto) {
+        return repository.findByNombreContainingIgnoreCase(texto);
+    }
+
+    // GET /productos/valor-inventario
+    public BigDecimal calcularValorInventario() {
+        BigDecimal valor = repository.calcularValorInventario();
+        if (valor == null) {
+            return BigDecimal.ZERO;
+        }
+        return valor;
+    }
+
+    // GET /productos/con-categoria
+    public List<ProductoConCategoria> listarConCategoria() {
+        return repository.listarConCategoria();
     }
 }

@@ -60,6 +60,20 @@ DELETE http://localhost:8080/productos/1
 ### =====================================================================
 ### 
 ### =====================================================================
+### 18. GET buscar por nombre -> 200 OK
+GET http://localhost:8080/productos?nombre=cafe
+### 19. GET buscar por nombre en mayúsculas -> 200 OK
+GET http://localhost:8080/productos?nombre=CAFE
+
+### 23. GET por categoría -> 200 OK
+GET http://localhost:8080/productos/categoria/Electrónica
 
 
+### 24. GET por una categoría sin productos -> 200 OK con []
+GET http://localhost:8080/productos/categoria/Zapatos
 
+### 28. GET valor del inventario -> 200 OK
+GET http://localhost:8080/productos/valor-inventario
+
+### 29. GET productos con el nombre de su categoría -> 200 OK
+GET http://localhost:8080/productos/con-categoria
