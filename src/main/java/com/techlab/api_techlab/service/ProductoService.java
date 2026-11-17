@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.techlab.api_techlab.dto.ProductoConCategoria;
+import com.techlab.api_techlab.exception.ProductoDuplicadoException;
 import com.techlab.api_techlab.exception.ProductoNoEncontradoException;
 import com.techlab.api_techlab.model.Categoria;
 import com.techlab.api_techlab.model.Producto;
@@ -49,8 +50,10 @@ public class ProductoService {
         Validador.validarPrecio(p.getPrecio());
         Validador.validarStock(p.getStock());
 
-        // El id lo asigna la base: se ignora el que envíe el cliente.
-        // Con id 0, save() hace un INSERT.
+        // Regla de negocio: no puede haber dos productos con el mismo nombre (409)
+        if (repository.existsByNombreIgnoreCase(p.getNombre())) {
+            throw new ProductoDuplicadoException("Ya existe un producto con el nombre " + p.getNombre());
+        }
         p.setId(0);
         p.setCategoria(obtenerCategoria(p));
         return repository.save(p);
@@ -64,6 +67,11 @@ public class ProductoService {
         Validador.validarNombre(datos.getNombre());
         Validador.validarPrecio(datos.getPrecio());
         Validador.validarStock(datos.getStock());
+
+        // El nombre puede repetirse solo si es el del mismo producto
+        if (repository.existsByNombreIgnoreCaseAndIdNot(datos.getNombre(), id)) {
+            throw new ProductoDuplicadoException("Ya existe un producto con el nombre " + datos.getNombre());
+        }
 
         p.setNombre(datos.getNombre());
         p.setPrecio(datos.getPrecio());
@@ -120,5 +128,12 @@ public class ProductoService {
     // GET /productos/con-categoria
     public List<ProductoConCategoria> listarConCategoria() {
         return repository.listarConCategoria();
+    }
+
+    // Lo usa PedidoService: resta las unidades vendidas y guarda el producto.
+    // El stock ya se validó antes, por eso aquí no se vuelve a comprobar.
+    public void descontarStock(Producto p, int cantidad) {
+        p.setStock(p.getStock() - cantidad);
+        repository.save(p);
     }
 }

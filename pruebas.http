@@ -77,3 +77,63 @@ GET http://localhost:8080/productos/valor-inventario
 
 ### 29. GET productos con el nombre de su categoría -> 200 OK
 GET http://localhost:8080/productos/con-categoria
+
+
+### Pedidos: crear pedido -> 201 Created
+POST http://localhost:8080/pedidos
+Content-Type: application/json
+
+{
+  "items": [
+    { "productoId": 1, "cantidad": 2 },
+    { "productoId": 2, "cantidad": 1 }
+  ]
+}
+
+
+### Pedidos: listar -> 200 OK
+GET http://localhost:8080/pedidos
+
+
+### Pedidos: obtener por id -> 200 OK
+GET http://localhost:8080/pedidos/1
+
+
+### Pedidos: id inexistente -> 404
+GET http://localhost:8080/pedidos/999
+
+
+### Pedidos: stock insuficiente -> 400
+POST http://localhost:8080/pedidos
+Content-Type: application/json
+
+{
+  "items": [
+    { "productoId": 1, "cantidad": 1 },
+    { "productoId": 2, "cantidad": 9999 }
+  ]
+}
+
+
+### Pedidos: producto inexistente -> 404
+POST http://localhost:8080/pedidos
+Content-Type: application/json
+
+{
+  "items": [
+    { "productoId": 999, "cantidad": 1 }
+  ]
+}
+
+
+### Pedidos: sin productos -> 400
+POST http://localhost:8080/pedidos
+Content-Type: application/json
+
+{
+  "items": []
+}
+
+
+### Productos: eliminar un producto que figura en pedidos -> 409
+DELETE http://localhost:8080/productos/1

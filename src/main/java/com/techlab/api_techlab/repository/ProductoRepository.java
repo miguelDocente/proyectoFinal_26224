@@ -20,6 +20,14 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
     @Query("SELECT SUM(p.precio * p.stock) FROM Producto p")
     BigDecimal calcularValorInventario();
 
-    @Query("SELECT new com.techlab.api_techlab.dto.ProductoConCategoria(p.id, p.nombre, p.precio, p.stock, c.nombre) " + "FROM Producto p JOIN p.categoria c")
+    @Query("SELECT new com.techlab.api_techlab.dto.ProductoConCategoria(p.id, p.nombre, p.precio, p.stock, c.nombre) "
+            + "FROM Producto p JOIN p.categoria c")
     List<ProductoConCategoria> listarConCategoria();
+
+    // ¿Ya existe un producto con ese nombre? (sin distinguir mayúsculas)
+    boolean existsByNombreIgnoreCase(String nombre);
+
+    // Igual, pero ignorando al producto con ese id: sirve al editar,
+    // para que un producto pueda conservar su propio nombre.
+    boolean existsByNombreIgnoreCaseAndIdNot(String nombre, int id);
 }
